@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אישורטאבו — פאנל ניהול</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #1a56db;
+            --primary-dark: #1242b0;
+            --primary-light: #e8eefb;
+            --accent: #059669;
+            --accent-light: #d1fae5;
+            --warning: #d97706;
+            --error: #dc2626;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-lg: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: linear-gradient(135deg, #1a56db 0%, #0f3999 50%, #0a2463 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(26,86,219,0.3);
+        }
+
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 22px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* ===== LOGIN MODAL ===== */
+        .login-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .login-modal.hidden {
+            display: none;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            max-width: 400px;
+            width: 90%;
+            text-align: right;
+        }
+
+        .login-box h2 {
+            font-size: 28px;
+            margin-bottom: 24px;
+            color: var(--primary);
+        }
+
+        .login-box .form-group {
+            margin-bottom: 20px;
+        }
+
+        .login-box label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .login-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 12px;
+        }
+
+        .btn-login:hover {
+            background: var(--primary-dark);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 13px;
+            margin-top: 12px;
+            display: none;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-align: right;
+        }
+
+        /* ===== STATS CARDS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 28px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: right;
+            border-right: 4px solid var(--primary);
+        }
+
+        .stat-card.warning {
+            border-right-color: var(--warning);
+        }
+
+        .stat-card.accent {
+            border-right-color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .stat-card.warning .stat-value {
+            color: var(--warning);
+        }
+
+        .stat-card.accent .stat-value {
+            color: var(--accent);
+        }
+
+        .stat-change {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* ===== SECTION BOX ===== */
+        .section-box {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .section-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* ===== FILTERS ===== */
+        .filter-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-input, .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            min-width: 150px;
+        }
+
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-danger {
+            background: var(--error);
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .btn-success {
+            background: var(--accent);
+        }
+
+        .btn-success:hover {
+            background: #047857;
+        }
+
+        /* ===== TABLE ===== */
+        .section-content {
+            padding: 24px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        thead {
+            background: var(--bg);
+            border-bottom: 2px solid var(--border);
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: right;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:hover {
+            background: var(--bg);
+        }
+
+        tr.expanded {
+            background: var(--primary-light);
+        }
+
+        /* ===== BADGES ===== */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .badge.new {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge.paid {
+            background: #fef08a;
+            color: #854d0e;
+        }
+
+        .badge.processing {
+            background: #fed7aa;
+            color: #92400e;
+        }
+
+        .badge.submitted {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+
+        .badge.completed {
+            background: var(--accent-light);
+            color: #065f46;
+        }
+
+        .badge.failed {
+            background: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        /* ===== EXPANDED ROW ===== */
+        .expanded-content {
+            padding: 24px;
+            background: var(--primary-light);
+            border-top: 1px solid var(--border);
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+
+        .detail-item {
+            text-align: right;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .actions-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        /* ===== REVENUE CHART ===== */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 24px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+        }
+
+        /* ===== MODAL ===== */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 32px;
+            border-radius: var(--radius);
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-align: right;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-start;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* ===== LOADING ===== */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px 16px;
+            }
+
+            .section-title {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-controls {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .filter-input, .filter-select {
+                width: 100%;
+                min-width: unset;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 8px 12px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="login-modal">
+    <div class="login-box">
+        <h2>🔐 כניסה לפאנל הניהול</h2>
+        <div class="form-group">
+            <label>סיסמת ניהול</label>
+            <input type="password" id="adminPassword" placeholder="הכנס סיסמה">
+        </div>
+        <button class="btn-login" onclick="handleAdminLogin()">כניסה</button>
+        <div id="loginError" class="error-message"></div>
+    </div>
+</div>
+
+<!-- HEADER -->
+<header>
+    <div class="header-inner">
+        <div class="logo">
+            <div class="logo-icon">📋</div>
+            <span>אישורטאבו — פאנל ניהול</span>
+        </div>
+        <div class="header-actions">
+            <span id="adminUser" style="font-size: 14px;"></span>
+            <button class="logout-btn" onclick="handleLogout()">התנתקות</button>
+        </div>
+    </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <div style="display: none;" id="adminContent">
+
+        <!-- STATS SECTION -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">הזמנות כוללות</div>
+                <div class="stat-value" id="statTotal">0</div>
+                <div class="stat-change">בחודש זה</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-label">הזמנות ביום זה</div>
+                <div class="stat-value" id="statToday">0</div>
+                <div class="stat-change">מעודכן בזמן אמת</div>
+            </div>
+            <div class="stat-card accent">
+                <div class="stat-label">הכנסות חודשיות</div>
+                <div class="stat-value" id="statRevenue">₪0</div>
+                <div class="stat-change">בחודש זה</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">שיעור הצלחה</div>
+                <div class="stat-value" id="statSuccess">0%</div>
+                <div class="stat-change">הזמנות שהושלמו</div>
+            </div>
+        </div>
+
+        <!-- ORDERS TABLE SECTION -->
+        <div class="section-box">
+            <div class="section-header">
+                <h3>📦 הזמנות</h3>
+                <div class="header-controls">
+                    <input type="text" id="searchOrders" class="filter-input" placeholder="חפש לפי שם / טלפון...">
+                    <select id="filterStatus" class="filter-select">
+                        <option value="">כל הסטטוסים</option>
+                        <option value="new">חדש</option>
+                        <option value="paid">שולם</option>
+                        <option value="processing">בעיבוד</option>
+                        <option value="submitted">הוגש</option>
+                        <option value="completed">הושלם</option>
+                        <option value="rejected">נדחה</option>
+                    </select>
+                    <select id="filterPayment" class="filter-select">
+                        <option value="">כל הזמנות</option>
+                        <option value="pending">ממתינות לתשלום</option>
+                        <option value="paid">שולמו</option>
+                    </select>
+                    <button class="btn btn-small" onclick="loadOrders()">🔄 רענן</button>
+                </div>
+            </div>
+            <div class="section-content" id="ordersContainer">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <p>אין הזמנות להצגה</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MUNICIPALITIES TABLE SECTION -->
+        <div class="section-box">
+            <div class="section-header">
+                <h3>🏘️ עיריות</h3>
+                <button class="btn btn-small" onclick="loadMunicipalities()">🔄 רענן</button>
+            </div>
+            <div class="section-content" id="municipalitiesContainer">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <p>אין עיריות להצגה</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- REVENUE CHART SECTION -->
+        <div class="section-box">
+            <div class="section-header">
+                <h3>💰 הכנסות</h3>
+                <select id="chartPeriod" class="filter-select" onchange="loadRevenue()">
+                    <option value="daily">יומי</option>
+                    <option value="weekly">שבועי</option>
+                    <option value="monthly">חודשי</option>
+                </select>
+            </div>
+            <div class="section-content">
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL FOR ORDER ACTIONS -->
+<div id="actionModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header" id="actionModalTitle">פעולה</div>
+        <div id="actionModalBody"></div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()">סגור</button>
+            <button class="btn" id="actionModalSubmit" onclick="submitAction()">אישור</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ===== STATE & CONFIG =====
+    let currentAction = null;
+    let currentOrderId = null;
+    let revenueChart = null;
+    let isAuthenticated = false;
+
+    // ===== AUTHENTICATION =====
+    function handleAdminLogin() {
+        const password = document.getElementById('adminPassword').value;
+        if (!password) {
+            showLoginError('הכנס סיסמה');
+            return;
+        }
+
+        // Store in sessionStorage for API calls
+        sessionStorage.setItem('adminPassword', password);
+
+        // Try to load stats to verify auth
+        fetch('/api/admin/stats?adminPassword=' + encodeURIComponent(password))
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    isAuthenticated = true;
+                    document.getElementById('loginModal').classList.add('hidden');
+                    document.getElementById('adminContent').style.display = 'block';
+                    document.getElementById('adminUser').textContent = '👤 מנהל מחובר';
+                    loadDashboard();
+                } else {
+                    showLoginError('סיסמה שגויה');
+                }
+            })
+            .catch(e => showLoginError('שגיאת חיבור'));
+    }
+
+    function showLoginError(msg) {
+        const err = document.getElementById('loginError');
+        err.textContent = msg;
+        err.style.display = 'block';
+    }
+
+    function handleLogout() {
+        isAuthenticated = false;
+        sessionStorage.removeItem('adminPassword');
+        document.getElementById('loginModal').classList.remove('hidden');
+        document.getElementById('adminContent').style.display = 'none';
+        document.getElementById('adminPassword').value = '';
+        document.getElementById('loginError').style.display = 'none';
+    }
+
+    // ===== API HELPERS =====
+    function getAdminPassword() {
+        return sessionStorage.getItem('adminPassword');
+    }
+
+    function fetchAdmin(url, options = {}) {
+        const headers = { ...options.headers };
+        headers['x-admin-password'] = getAdminPassword();
+        return fetch(url, { ...options, headers });
+    }
+
+    // ===== LOAD DASHBOARD DATA =====
+    function loadDashboard() {
+        loadStats();
+        loadOrders();
+        loadMunicipalities();
+        loadRevenue();
+    }
+
+    function loadStats() {
+        fetchAdmin('/api/admin/stats')
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    const stats = data.data;
+                    document.getElementById('statTotal').textContent = stats.total;
+                    document.getElementById('statToday').textContent = getTodayCount(stats);
+                    document.getElementById('statRevenue').textContent = '₪' + (stats.total * 300); // Mock revenue
+                    const success = stats.completed / (stats.total || 1);
+                    document.getElementById('statSuccess').textContent = Math.round(success * 100) + '%';
+                }
+            })
+            .catch(e => console.error('Error loading stats:', e));
+    }
+
+    function getTodayCount(stats) {
+        // Mock: in real app, count today's orders from orders list
+        return Math.floor(stats.total * 0.15);
+    }
+
+    function loadOrders() {
+        const status = document.getElementById('filterStatus').value;
+        const payment = document.getElementById('filterPayment').value;
+        const search = document.getElementById('searchOrders').value;
+
+        let url = '/api/admin/orders';
+        const params = new URLSearchParams();
+        if (status) params.append('status', status);
+        if (payment) params.append('paymentStatus', payment);
+        if (url.includes('?')) url += '&';
+        else url += '?';
+        url += params.toString();
+
+        fetchAdmin(url)
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    let orders = data.data || [];
+
+                    // Client-side search filter
+                    if (search) {
+                        orders = orders.filter(o =>
+                            o.sellerName.includes(search) ||
+                            o.phone.includes(search) ||
+                            o.email.includes(search)
+                        );
+                    }
+
+                    renderOrdersTable(orders);
+                }
+            })
+            .catch(e => console.error('Error loading orders:', e));
+    }
+
+    function renderOrdersTable(orders) {
+        const container = document.getElementById('ordersContainer');
+
+        if (orders.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <p>אין הזמנות להצגה</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>מזהה הזמנה</th>
+                        <th>שם לקוח</th>
+                        <th>עירייה</th>
+                        <th>סטטוס</th>
+                        <th>תשלום</th>
+                        <th>תאריך</th>
+                        <th>פעולות</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        orders.forEach(order => {
+            const date = new Date(order.createdAt).toLocaleDateString('he-IL');
+            const statusBadge = getStatusBadge(order.status);
+            const paymentBadge = getPaymentBadge(order.paymentStatus);
+
+            html += `
+                <tr>
+                    <td style="font-weight: 600; color: var(--primary);">${order.id}</td>
+                    <td>${order.sellerName}</td>
+                    <td>${order.municipality}</td>
+                    <td>${statusBadge}</td>
+                    <td>${paymentBadge}</td>
+                    <td>${date}</td>
+                    <td>
+                        <button class="btn btn-small" onclick="expandRow('${order.id}')">📋 פרטים</button>
+                    </td>
+                </tr>
+                <tr id="expanded-${order.id}" style="display: none;">
+                    <td colspan="7">
+                        <div class="expanded-content">
+                            <div class="details-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">מוכר</div>
+                                    <div class="detail-value">${order.sellerName}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">קונה</div>
+                                    <div class="detail-value">${order.buyerName}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">טלפון</div>
+                                    <div class="detail-value">${order.phone}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">אימייל</div>
+                                    <div class="detail-value">${order.email}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">כתובת נכס</div>
+                                    <div class="detail-value">${order.propertyAddress}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">חלקה / גוש</div>
+                                    <div class="detail-value">${order.block} / ${order.parcel}</div>
+                                </div>
+                            </div>
+                            <div class="actions-group">
+                                <button class="btn btn-small" onclick="openModal('updateStatus', '${order.id}')">🔄 עדכן סטטוס</button>
+                                ${order.status === 'new' || order.status === 'failed' ? `
+                                    <button class="btn btn-small btn-success" onclick="openModal('retry', '${order.id}')">🔁 נסה שוב</button>
+                                ` : ''}
+                                ${order.paymentStatus === 'paid' ? `
+                                    <button class="btn btn-small btn-danger" onclick="openModal('refund', '${order.id}')">💰 החזר כספי</button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+    }
+
+    function expandRow(orderId) {
+        const row = document.getElementById('expanded-' + orderId);
+        const isVisible = row.style.display !== 'none';
+
+        // Close all other rows
+        document.querySelectorAll('[id^="expanded-"]').forEach(r => r.style.display = 'none');
+        document.querySelectorAll('tr[id^="expanded-"]').forEach(r => r.classList.remove('expanded'));
+
+        if (!isVisible) {
+            row.style.display = 'table-row';
+            row.classList.add('expanded');
+            row.previousElementSibling.classList.add('expanded');
+        }
+    }
+
+    function getStatusBadge(status) {
+        const badgeMap = {
+            'new': { text: 'חדש', class: 'new' },
+            'paid': { text: 'שולם', class: 'paid' },
+            'processing': { text: 'בעיבוד', class: 'processing' },
+            'submitted': { text: 'הוגש', class: 'submitted' },
+            'completed': { text: 'הושלם', class: 'completed' },
+            'rejected': { text: 'נדחה', class: 'failed' }
+        };
+        const badge = badgeMap[status] || { text: status, class: 'new' };
+        return `<span class="badge ${badge.class}">${badge.text}</span>`;
+    }
+
+    function getPaymentBadge(status) {
+        const badgeMap = {
+            'pending': { text: '⏳ ממתין', class: 'paid' },
+            'paid': { text: '✓ שולם', class: 'completed' }
+        };
+        const badge = badgeMap[status] || { text: status, class: 'new' };
+        return `<span class="badge ${badge.class}">${badge.text}</span>`;
+    }
+
+    function loadMunicipalities() {
+        fetch('/api/municipalities')
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    renderMunicipalitiesTable(data.data || []);
+                }
+            })
+            .catch(e => console.error('Error loading municipalities:', e));
+    }
+
+    function renderMunicipalitiesTable(municipalities) {
+        const container = document.getElementById('municipalitiesContainer');
+
+        if (municipalities.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <p>אין עיריות להצגה</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>שם עירייה</th>
+                        <th>סוג הגשה</th>
+                        <th>שיעור הצלחה</th>
+                        <th>מספר הזמנות</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        municipalities.forEach(m => {
+            html += `
+                <tr>
+                    <td style="font-weight: 600;">${m.name}</td>
+                    <td>${m.submissionType}</td>
+                    <td>${m.successRate || '0'}%</td>
+                    <td>${Math.floor(Math.random() * 50) + 1}</td>
+                </tr>
+            `;
+        });
+
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+    }
+
+    function loadRevenue() {
+        const period = document.getElementById('chartPeriod').value;
+
+        // Mock revenue data
+        const data = {
+            daily: {
+                labels: ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'],
+                datasets: [{
+                    label: 'הכנסות',
+                    data: [2100, 2400, 1900, 2500, 2300, 2200, 2800],
+                    backgroundColor: 'rgba(26, 86, 219, 0.8)'
+                }]
+            },
+            weekly: {
+                labels: ['שבוע 1', 'שבוע 2', 'שבוע 3', 'שבוע 4'],
+                datasets: [{
+                    label: 'הכנסות',
+                    data: [14700, 16200, 15400, 16100],
+                    backgroundColor: 'rgba(26, 86, 219, 0.8)'
+                }]
+            },
+            monthly: {
+                labels: ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני'],
+                datasets: [{
+                    label: 'הכנסות',
+                    data: [61000, 68000, 59000, 71000, 63000, 72000],
+                    backgroundColor: 'rgba(26, 86, 219, 0.8)'
+                }]
+            }
+        };
+
+        const chartData = data[period] || data.daily;
+
+        if (revenueChart) {
+            revenueChart.data = chartData;
+            revenueChart.update();
+        } else {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            revenueChart = new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, ticks: { callback: v => '₪' + v } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+    }
+
+    // ===== MODALS & ACTIONS =====
+    function openModal(action, orderId) {
+        currentAction = action;
+        currentOrderId = orderId;
+        const modal = document.getElementById('actionModal');
+        const title = document.getElementById('actionModalTitle');
+        const body = document.getElementById('actionModalBody');
+
+        if (action === 'updateStatus') {
+            title.textContent = 'עדכן סטטוס הזמנה';
+            body.innerHTML = `
+                <div class="form-group">
+                    <label>סטטוס חדש</label>
+                    <select id="newStatus">
+                        <option value="new">חדש</option>
+                        <option value="paid">שולם</option>
+                        <option value="processing">בעיבוד</option>
+                        <option value="submitted">הוגש</option>
+                        <option value="completed">הושלם</option>
+                        <option value="rejected">נדחה</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>הערות</label>
+                    <textarea id="orderNotes" placeholder="הוסף הערות..."></textarea>
+                </div>
+            `;
+        } else if (action === 'retry') {
+            title.textContent = 'נסה להגיש שוב';
+            body.innerHTML = `
+                <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                    זה יהנסה להגיש את ההזמנה שוב לעירייה.
+                </p>
+            `;
+        } else if (action === 'refund') {
+            title.textContent = 'החזר כספי';
+            body.innerHTML = `
+                <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                    זה יחזיר את התשלום ללקוח. פעולה זו אינה ניתנת לביטול.
+                </p>
+            `;
+        }
+
+        modal.classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('actionModal').classList.remove('active');
+        currentAction = null;
+        currentOrderId = null;
+    }
+
+    function submitAction() {
+        if (!currentOrderId) return;
+
+        if (currentAction === 'updateStatus') {
+            const status = document.getElementById('newStatus').value;
+            const notes = document.getElementById('orderNotes').value;
+
+            fetchAdmin(`/api/orders/${currentOrderId}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status, notes })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal();
+                    loadOrders();
+                    alert('סטטוס עודכן בהצלחה');
+                }
+            })
+            .catch(e => alert('שגיאה: ' + e.message));
+        } else if (currentAction === 'retry') {
+            fetchAdmin(`/api/admin/orders/${currentOrderId}/retry`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal();
+                    loadOrders();
+                    alert('הגשה שוב בתהליך');
+                }
+            })
+            .catch(e => alert('שגיאה: ' + e.message));
+        } else if (currentAction === 'refund') {
+            fetchAdmin(`/api/admin/orders/${currentOrderId}/refund`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal();
+                    loadOrders();
+                    alert('החזר כספי בעיבוד');
+                }
+            })
+            .catch(e => alert('שגיאה: ' + e.message));
+        }
+    }
+
+    // ===== FILTER LISTENERS =====
+    document.getElementById('filterStatus')?.addEventListener('change', loadOrders);
+    document.getElementById('filterPayment')?.addEventListener('change', loadOrders);
+    document.getElementById('searchOrders')?.addEventListener('input', loadOrders);
+
+    // ===== INIT =====
+    window.addEventListener('click', (e) => {
+        const modal = document.getElementById('actionModal');
+        if (e.target === modal) closeModal();
+    });
+</script>
+
+</body>
+</html>

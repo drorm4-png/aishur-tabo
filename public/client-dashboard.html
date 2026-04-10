@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>עקוב אחר הזמנתך - אישורטאבו</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a56db;
+            --primary-dark: #1242b0;
+            --primary-light: #e8eefb;
+            --accent: #059669;
+            --accent-light: #d1fae5;
+            --warning: #d97706;
+            --error: #dc2626;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-lg: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: linear-gradient(135deg, #1a56db 0%, #0f3999 50%, #0a2463 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(26,86,219,0.3);
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 22px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ===== LOOKUP SECTION ===== */
+        .lookup-box {
+            background: white;
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: right;
+        }
+
+        .lookup-box h2 {
+            font-size: 28px;
+            margin-bottom: 24px;
+            color: var(--text);
+        }
+
+        .lookup-intro {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.8;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-wide {
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* ===== ORDER STATUS DISPLAY ===== */
+        .status-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .order-header {
+            background: white;
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            text-align: right;
+        }
+
+        .order-header h2 {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .order-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .order-number {
+            background: var(--primary-light);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: var(--primary);
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        /* ===== TIMELINE ===== */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 20px;
+            position: relative;
+            align-items: flex-start;
+        }
+
+        .timeline-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 17px;
+            top: 60px;
+            width: 2px;
+            height: 60px;
+            background: var(--border);
+        }
+
+        .timeline-item.completed:not(:last-child)::after {
+            background: var(--accent);
+        }
+
+        .timeline-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+            font-size: 18px;
+        }
+
+        .timeline-item.completed .timeline-dot {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .timeline-item.active .timeline-dot {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 0 0 8px rgba(26,86,219,0.15);
+        }
+
+        .timeline-content {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            text-align: right;
+            border-right: 4px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .timeline-item.completed .timeline-content {
+            border-right-color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .timeline-item.active .timeline-content {
+            border-right-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .timeline-content h4 {
+            font-size: 16px;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .timeline-content p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .timeline-date {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* ===== ORDER DETAILS ===== */
+        .details-box {
+            background: white;
+            padding: 28px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .details-box h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: right;
+            color: var(--text);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            text-align: right;
+        }
+
+        .detail-item {
+            border-right: 3px solid var(--primary-light);
+            padding-right: 16px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        /* ===== DOCUMENTS SECTION ===== */
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .document-card {
+            background: var(--bg);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .document-card:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .document-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .document-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .document-status {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .document-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .document-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .document-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .document-btn.empty-btn {
+            background: var(--border);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* ===== SUPPORT SECTION ===== */
+        .support-section {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
+            padding: 32px;
+            border-radius: var(--radius);
+            text-align: right;
+        }
+
+        .support-section h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .support-section p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .support-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .btn-support {
+            padding: 12px 20px;
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-support:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* ===== LOADING STATE ===== */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .container {
+                padding: 24px 16px;
+            }
+
+            .lookup-box {
+                padding: 24px;
+            }
+
+            .lookup-box h2 {
+                font-size: 22px;
+            }
+
+            .order-header h2 {
+                font-size: 20px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .documents-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .support-buttons {
+                flex-direction: column;
+                justify-content: flex-start;
+            }
+
+            .btn-support, .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .badge.completed {
+            background: var(--accent-light);
+            color: #065f46;
+        }
+
+        .badge.pending {
+            background: #fef08a;
+            color: #854d0e;
+        }
+
+        .badge.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <div class="header-inner">
+        <div class="logo">
+            <div class="logo-icon">🔍</div>
+            <span>עקוב אחר הזמנתך</span>
+        </div>
+        <div style="font-size: 14px; opacity: 0.9;">אישורטאבו</div>
+    </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+
+    <!-- LOOKUP SECTION -->
+    <div id="lookupSection" class="page-section active">
+        <div class="lookup-box">
+            <h2>🔍 עקוב אחר הזמנתך</h2>
+            <p class="lookup-intro">
+                הזן את מזהה ההזמנה וטלפון או אימייל כדי לראות את מצב ההזמנה שלך.
+            </p>
+
+            <div id="lookupError" class="error-message"></div>
+
+            <div class="form-group">
+                <label>מזהה הזמנה</label>
+                <input type="text" id="orderId" placeholder="ORD-1234567890" autocomplete="off">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>טלפון</label>
+                    <input type="tel" id="phone" placeholder="050-1234567" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>או אימייל</label>
+                    <input type="email" id="email" placeholder="example@email.com" autocomplete="off">
+                </div>
+            </div>
+
+            <button class="btn btn-wide" id="lookupBtn" onclick="handleLookup()">
+                🔍 חפש הזמנה
+            </button>
+        </div>
+    </div>
+
+    <!-- STATUS SECTION -->
+    <div id="statusSection" class="page-section">
+        <div class="status-container">
+            <!-- Order Header -->
+            <div class="order-header">
+                <h2 id="orderTitle">הזמנה שלך</h2>
+                <p id="orderSubtitle">מצב עדכני של ההזמנה</p>
+                <div class="order-number" id="orderNumber"></div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="timeline" id="statusTimeline"></div>
+
+            <!-- Order Details -->
+            <div class="details-box">
+                <h3>📋 פרטי הנכס</h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">כתובת הנכס</div>
+                        <div class="detail-value" id="detailAddress"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">עירייה</div>
+                        <div class="detail-value" id="detailMunicipality"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">גוש/חלקה</div>
+                        <div class="detail-value" id="detailBlock"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">סוג עסקה</div>
+                        <div class="detail-value" id="detailTransaction"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Client Details -->
+            <div class="details-box">
+                <h3>👤 פרטי הצדדים</h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">מוכר</div>
+                        <div class="detail-value" id="detailSeller"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">קונה</div>
+                        <div class="detail-value" id="detailBuyer"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">טלפון</div>
+                        <div class="detail-value" id="detailPhone"></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">אימייל</div>
+                        <div class="detail-value" id="detailEmail"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Documents Section -->
+            <div class="details-box">
+                <h3>📄 מסמכים</h3>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+                    הורד את המסמכים שלך הנדרשים לטאבו.
+                </p>
+                <div class="documents-grid" id="documentsGrid">
+                    <div class="document-card">
+                        <div class="document-icon">📋</div>
+                        <div class="document-name">ייפוי כוח</div>
+                        <div class="document-status">PDF</div>
+                        <button class="document-btn empty-btn" disabled>אינו זמין עדיין</button>
+                    </div>
+                    <div class="document-card">
+                        <div class="document-icon">✅</div>
+                        <div class="document-name">אישור עירייה</div>
+                        <div class="document-status">PDF</div>
+                        <button class="document-btn empty-btn" disabled>אינו זמין עדיין</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support Section -->
+            <div class="support-section">
+                <h3>💬 קצת עזרה?</h3>
+                <p>
+                    אם יש לך שאלות או שנתקלת בבעיה, אנחנו כאן כדי לעזור לך. צור איתנו קשר במהלך שעות העבודה.
+                </p>
+                <div class="support-buttons">
+                    <a href="https://wa.me/971234567890?text=שלום%20אני%20צריך%20עזרה%20עם%20ההזמנה%20שלי"
+                       class="btn-support" target="_blank">
+                        💬 WhatsApp
+                    </a>
+                    <a href="tel:021234567" class="btn-support">
+                        📞 צור קשר
+                    </a>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <button class="btn btn-wide" style="margin-top: 24px;" onclick="goBack()">
+                ← חזור לחיפוש
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const statusSteps = [
+        { id: 'received', label: 'הזמנה התקבלה', emoji: '📩' },
+        { id: 'payment', label: 'תשלום בוצע', emoji: '💳' },
+        { id: 'signed', label: 'ייפוי כוח נחתם', emoji: '✍️' },
+        { id: 'submitted', label: 'הוגש לעירייה', emoji: '📤' },
+        { id: 'approved', label: 'אישור התקבל', emoji: '✅' }
+    ];
+
+    const statusMap = {
+        'new': 'received',
+        'paid': 'payment',
+        'processing': 'signed',
+        'submitted': 'submitted',
+        'completed': 'approved'
+    };
+
+    function handleLookup() {
+        const orderId = document.getElementById('orderId').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const errorEl = document.getElementById('lookupError');
+
+        // Validation
+        if (!orderId) {
+            showError('הכנס מזהה הזמנה', errorEl);
+            return;
+        }
+
+        if (!phone && !email) {
+            showError('הכנס טלפון או אימייל', errorEl);
+            return;
+        }
+
+        errorEl.classList.remove('show');
+
+        // Make API call
+        const lookupBtn = document.getElementById('lookupBtn');
+        lookupBtn.disabled = true;
+        lookupBtn.innerHTML = '<span class="loading"></span> חיפוש...';
+
+        const body = { orderId };
+        if (phone) body.phone = phone;
+        if (email) body.email = email;
+
+        fetch('/api/client/lookup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        })
+        .then(r => r.json())
+        .then(data => {
+            lookupBtn.disabled = false;
+            lookupBtn.innerHTML = '🔍 חפש הזמנה';
+
+            if (data.success && data.data) {
+                displayOrderStatus(data.data);
+            } else {
+                showError('ההזמנה לא נמצאה. בדוק את הפרטים ונסה שוב.', errorEl);
+            }
+        })
+        .catch(err => {
+            lookupBtn.disabled = false;
+            lookupBtn.innerHTML = '🔍 חפש הזמנה';
+            showError('שגיאה בחיבור. נסה שוב.', errorEl);
+            console.error(err);
+        });
+    }
+
+    function displayOrderStatus(order) {
+        // Switch sections
+        document.getElementById('lookupSection').classList.remove('active');
+        document.getElementById('statusSection').classList.add('active');
+
+        // Update header
+        document.getElementById('orderNumber').textContent = order.id;
+        document.getElementById('orderTitle').textContent = order.municipality;
+
+        // Update details
+        document.getElementById('detailAddress').textContent = order.propertyAddress;
+        document.getElementById('detailMunicipality').textContent = order.municipality;
+        document.getElementById('detailBlock').textContent = `${order.block} / ${order.parcel}`;
+        document.getElementById('detailTransaction').textContent = order.transactionType;
+        document.getElementById('detailSeller').textContent = order.sellerName;
+        document.getElementById('detailBuyer').textContent = order.buyerName;
+        document.getElementById('detailPhone').textContent = order.phone;
+        document.getElementById('detailEmail').textContent = order.email;
+
+        // Render timeline
+        renderTimeline(order);
+    }
+
+    function renderTimeline(order) {
+        const container = document.getElementById('statusTimeline');
+        const currentStep = statusMap[order.status] || 'received';
+        const createdDate = new Date(order.createdAt).toLocaleDateString('he-IL');
+        const updatedDate = new Date(order.updatedAt).toLocaleDateString('he-IL');
+
+        let html = '';
+
+        statusSteps.forEach((step, index) => {
+            const isCompleted = statusSteps.findIndex(s => s.id === currentStep) > index;
+            const isActive = step.id === currentStep;
+            const statusClass = isCompleted ? 'completed' : isActive ? 'active' : '';
+
+            let dateText = '';
+            if (step.id === 'received') dateText = `<div class="timeline-date">${createdDate}</div>`;
+            if (step.id === currentStep) dateText = `<div class="timeline-date">עודכן: ${updatedDate}</div>`;
+
+            html += `
+                <div class="timeline-item ${statusClass}">
+                    <div class="timeline-dot">${step.emoji}</div>
+                    <div class="timeline-content">
+                        <h4>${step.label}</h4>
+                        ${getStepDescription(step.id, order)}
+                        ${dateText}
+                    </div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function getStepDescription(stepId, order) {
+        const descriptions = {
+            'received': '<p>ההזמנה שלך התקבלה בהצלחה במערכת</p>',
+            'payment': order.paymentStatus === 'paid'
+                ? '<p>התשלום אושר וזכויות לחשבונך</p>'
+                : '<p>ממתין לביצוע התשלום</p>',
+            'signed': '<p>ייפוי הכוח חתום על ידיך</p>',
+            'submitted': '<p>המסמכים הוגשו לעירייה</p>',
+            'approved': '<p>אישור העירייה התקבל! 🎉</p>'
+        };
+        return descriptions[stepId] || '';
+    }
+
+    function goBack() {
+        document.getElementById('statusSection').classList.remove('active');
+        document.getElementById('lookupSection').classList.add('active');
+        document.getElementById('orderId').value = '';
+        document.getElementById('phone').value = '';
+        document.getElementById('email').value = '';
+    }
+
+    function showError(msg, el) {
+        el.textContent = msg;
+        el.classList.add('show');
+    }
+
+    // Allow Enter key to search
+    document.getElementById('orderId')?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleLookup();
+    });
+
+    document.getElementById('phone')?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleLookup();
+    });
+
+    document.getElementById('email')?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleLookup();
+    });
+</script>
+
+</body>
+</html>

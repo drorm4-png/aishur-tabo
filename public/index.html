@@ -1,0 +1,2526 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אישורטאבו - אישור עירייה לטאבו בקליק</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a56db;
+            --primary-dark: #1242b0;
+            --primary-light: #e8eefb;
+            --accent: #059669;
+            --accent-light: #d1fae5;
+            --warning: #d97706;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-lg: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: linear-gradient(135deg, #1a56db 0%, #0f3999 50%, #0a2463 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(26,86,219,0.3);
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 22px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        nav {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        nav a {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        nav a:hover, nav a.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        .nav-cta {
+            background: white !important;
+            color: var(--primary) !important;
+            font-weight: 600 !important;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            nav { position: absolute; top: 64px; left: 0; right: 0; flex-direction: column; background: #0f3999; display: none; }
+            nav.mobile-show { display: flex; }
+            .menu-toggle { display: block; }
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #0f3999 100%);
+            color: white;
+            padding: 80px 24px;
+            text-align: right;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 44px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 32px;
+            opacity: 0.95;
+            max-width: 600px;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-light);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        .btn-loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* ===== SECTIONS ===== */
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        .container > h2 {
+            font-size: 36px;
+            margin-bottom: 40px;
+            text-align: right;
+        }
+
+        /* ===== HOME PAGE ===== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 32px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: right;
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* ===== ORDER FORM ===== */
+        .order-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-progress {
+            display: flex;
+            background: var(--primary-light);
+            padding: 20px;
+            gap: 8px;
+        }
+
+        .form-progress-step {
+            flex: 1;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            transition: background 0.3s;
+        }
+
+        .form-progress-step.active {
+            background: var(--primary);
+        }
+
+        .form-progress-step.completed {
+            background: var(--accent);
+        }
+
+        .form-body {
+            padding: 40px;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .form-step > h3 {
+            font-size: 24px;
+            margin-bottom: 24px;
+            text-align: right;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
+        }
+
+        /* ===== MUNICIPALITY SEARCH ===== */
+        .muni-search-wrapper {
+            position: relative;
+        }
+
+        .muni-search-input {
+            width: 100%;
+            padding: 12px 16px !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 8px !important;
+            font-size: 14px !important;
+        }
+
+        #muniDropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            box-shadow: var(--shadow);
+            z-index: 50;
+        }
+
+        #muniDropdown.show {
+            display: block;
+        }
+
+        .muni-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .muni-option:hover {
+            background: var(--primary-light);
+        }
+
+        .muni-option:last-child {
+            border-bottom: none;
+        }
+
+        .muni-type {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--bg);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        #selectedMuni {
+            display: none;
+            background: var(--accent-light);
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 12px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #selectedMuni.show {
+            display: flex;
+        }
+
+        #selMuniName {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        #selMuniDetails {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .clear-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 0;
+        }
+
+        /* ===== FILE UPLOAD ===== */
+        .upload-section {
+            margin-bottom: 24px;
+        }
+
+        .upload-section > p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .upload-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .upload-btn {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 10px 16px;
+            border: 1px dashed var(--primary);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-btn:hover {
+            background: white;
+            border-color: var(--primary);
+        }
+
+        .uploaded-files {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .uploaded-file {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--bg);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .uploaded-file .file-name {
+            flex: 1;
+        }
+
+        .uploaded-file .file-size {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .remove-file {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0;
+            transition: color 0.2s;
+        }
+
+        .remove-file:hover {
+            color: var(--primary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* ===== PAYMENT SECTION ===== */
+        .payment-info {
+            background: var(--primary-light);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            text-align: right;
+        }
+
+        .payment-info h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .payment-details {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .payment-details p {
+            margin-bottom: 4px;
+        }
+
+        .card-fields {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .card-fields { grid-template-columns: 1fr; }
+        }
+
+        #paymentIframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        /* ===== SUMMARY ===== */
+        .summary-box {
+            background: var(--bg);
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: var(--text-secondary);
+        }
+
+        .summary-value {
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .fee-row {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 2px solid var(--border);
+        }
+
+        .total-row {
+            font-size: 16px;
+            color: var(--primary);
+        }
+
+        /* ===== SUCCESS PAGE ===== */
+        .success-box {
+            text-align: center;
+            padding: 60px 24px;
+        }
+
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 24px;
+        }
+
+        .success-box h3 {
+            font-size: 28px;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+
+        .order-number {
+            font-size: 24px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 24px 0;
+            background: var(--primary-light);
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        .success-box p {
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.8;
+        }
+
+        .success-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 32px;
+            flex-wrap: wrap;
+        }
+
+        /* ===== STATUS PAGE ===== */
+        .track-form {
+            background: white;
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .track-form .form-row {
+            display: block;
+        }
+
+        .track-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        #statusTimeline {
+            display: none;
+        }
+
+        #statusTimeline.show {
+            display: block;
+        }
+
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 20px;
+            text-align: right;
+            position: relative;
+        }
+
+        .timeline-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 17px;
+            top: 60px;
+            width: 2px;
+            height: 40px;
+            background: var(--border);
+        }
+
+        .timeline-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 3px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+        .timeline-item.completed .timeline-dot {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .timeline-item.active .timeline-dot {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .timeline-content h4 {
+            margin-bottom: 4px;
+            font-size: 16px;
+        }
+
+        .timeline-content p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* ===== ADMIN PANEL ===== */
+        .admin-panel {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 40px;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--bg);
+            padding: 24px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .orders-table {
+            overflow-x: auto;
+        }
+
+        .orders-table table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .orders-table thead {
+            background: var(--bg);
+        }
+
+        .orders-table th {
+            padding: 16px;
+            text-align: right;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .orders-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.new {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-badge.processing {
+            background: #dbeafe;
+            color: #1a56db;
+        }
+
+        .status-badge.submitted {
+            background: #bfdbfe;
+            color: #1042a0;
+        }
+
+        .status-badge.completed {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        /* ===== NOTIFICATION ===== */
+        .notification {
+            position: fixed;
+            bottom: -100px;
+            right: 24px;
+            background: #ef4444;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            transition: bottom 0.3s;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            bottom: 24px;
+        }
+
+        .notification.success {
+            background: var(--accent);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: #1a2942;
+            color: white;
+            padding: 60px 24px 24px;
+            margin-top: 60px;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand h3 {
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
+
+        .footer-brand p {
+            color: rgba(255,255,255,0.7);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .footer-links h4 {
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+
+        .footer-links a {
+            display: block;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            margin-bottom: 12px;
+            font-size: 13px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 24px;
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .hero { padding: 40px 24px; }
+            .hero h1 { font-size: 32px; }
+            .hero p { font-size: 16px; }
+            .container { padding: 40px 24px; }
+            .container > h2 { font-size: 28px; }
+            .form-body { padding: 24px; }
+            .admin-panel { padding: 20px; }
+        }
+
+        /* ===== SIGNATURE PAD ===== */
+        .signature-section {
+            direction: rtl;
+            background-color: #fff;
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .signature-section h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .terms-container {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 20px;
+            background-color: #f8fafc;
+            font-size: 13px;
+            line-height: 1.7;
+            color: #475569;
+        }
+
+        .terms-container::-webkit-scrollbar { width: 8px; }
+        .terms-container::-webkit-scrollbar-track { background: #f1f5f9; border-radius: var(--radius); }
+        .terms-container::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        .terms-container::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #1e293b;
+            cursor: pointer;
+        }
+
+        .terms-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .poa-preview {
+            background-color: var(--primary-light);
+            border: 1px solid var(--primary);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            line-height: 1.7;
+            color: #1e293b;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .poa-preview::-webkit-scrollbar { width: 6px; }
+        .poa-preview::-webkit-scrollbar-track { background: transparent; }
+        .poa-preview::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+
+        .signature-pad-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .signature-pad-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .signature-canvas {
+            display: block;
+            width: 100%;
+            height: 200px;
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            background-color: #fff;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        .signature-canvas.has-signature {
+            border-style: solid;
+            border-color: var(--accent);
+        }
+
+        .signature-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .signature-actions button {
+            padding: 8px 16px;
+            font-size: 13px;
+            font-family: 'Heebo', sans-serif;
+            font-weight: 500;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sig-clear-btn {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            border: 1px solid var(--primary) !important;
+        }
+
+        .sig-clear-btn:hover:not(:disabled) {
+            background-color: var(--primary);
+            color: #fff;
+        }
+
+        .sig-undo-btn {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid var(--border) !important;
+        }
+
+        .sig-undo-btn:hover:not(:disabled) {
+            background-color: #e2e8f0;
+        }
+
+        .signature-actions button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .signature-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .signature-status.signed {
+            background-color: rgba(5, 150, 105, 0.1);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .signature-status.unsigned {
+            background-color: rgba(100, 116, 139, 0.1);
+            color: #64748b;
+            border: 1px solid #cbd5e1;
+        }
+
+        .id-upload-reminder {
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: var(--radius);
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #92400e;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .signature-canvas { height: 160px; }
+            .signature-actions { flex-direction: column; }
+            .signature-actions button { width: 100%; }
+            .terms-container { max-height: 250px; font-size: 12px; }
+            .poa-preview { max-height: 150px; font-size: 12px; }
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <div class="header-inner">
+        <div class="logo">
+            <div class="logo-icon">📋</div>
+            <span>אישורטאבו</span>
+        </div>
+        <nav id="mainNav">
+            <a href="#" onclick="showPage('home')" class="active">ראשי</a>
+            <a href="#" onclick="showPage('order')">הזמנה חדשה</a>
+            <a href="#" onclick="showPage('status')">מעקב הזמנה</a>
+            <a href="#" onclick="showPage('admin')" class="nav-cta">ניהול</a>
+        </nav>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    </div>
+</header>
+
+<!-- PAGES -->
+<div class="pages-wrapper">
+    <!-- ========== HOME PAGE ========== -->
+    <div class="page-section active" id="page-home">
+        <div class="hero">
+            <h1>אישור עירייה לטאבו בקליק</h1>
+            <p>שירות מקצועי מהיר וידידותי לקבלת אישור עירייה לטאבו. לא תצטרכו להציע בעצמכם - אנחנו נעשה זאת בשבילכם!</p>
+            <div class="hero-buttons">
+                <a href="#" onclick="showPage('order')" class="btn btn-primary">התחילו הזמנה</a>
+                <a href="#" class="btn btn-secondary">לקרוא עוד</a>
+            </div>
+        </div>
+
+        <div class="container">
+            <h2>למה לבחור בנו?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>מהיר וקל</h3>
+                    <p>אין צורך לבדוק כתובות דוא"ל של עיריות. אנחנו מצפינים את כל הפרטים.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>בטוח ופרטי</h3>
+                    <p>כל הפרטים שלכם מוצפנים ובטוחים. אנחנו עומדים בחוקי GDPR.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+                    <h3>שקיף וברור</h3>
+                    <p>ללא עלויות נסתרות. תדעו בדיוק כמה עולה מראש.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>תמיד זמין</h3>
+                    <p>ניתן להזמין בכל שעה ממכשיר כלשהו. אפילו בשבת בערב!</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>מעקב בזמן אמת</h3>
+                    <p>עקבו אחר ההזמנה שלכם בכל רגע נתון.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👨‍⚖️</div>
+                    <h3>עם תמיכה משפטית</h3>
+                    <p>מבית DML עורכי דין - צוות משפטי מנוסה ממש לפי הקרן.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== ORDER PAGE ========== -->
+    <div class="page-section" id="page-order">
+        <div class="container">
+            <h2>הזמנה חדשה</h2>
+
+            <div class="order-container">
+                <div class="form-progress">
+                    <div class="form-progress-step active" data-step="1"></div>
+                    <div class="form-progress-step" data-step="2"></div>
+                    <div class="form-progress-step" data-step="3"></div>
+                    <div class="form-progress-step" data-step="4"></div>
+                    <div class="form-progress-step" data-step="5"></div>
+                </div>
+
+                <div class="form-body">
+                    <!-- STEP 1: MUNICIPALITY & TRANSACTION TYPE -->
+                    <div class="form-step active" id="step-1">
+                        <h3>בחירת עירייה וסוג עסקה</h3>
+
+                        <div class="form-group">
+                            <label>בחרו את הרשות המקומית שלכם:</label>
+                            <div class="muni-search-wrapper">
+                                <input type="text" id="muniSearch" class="muni-search-input" placeholder="חיפוש עירייה..." onfocus="showMuniDropdown()" oninput="filterMunicipalities()">
+                                <div id="muniDropdown"></div>
+                            </div>
+                            <div id="selectedMuni" class="show">
+                                <div>
+                                    <div id="selMuniName">—</div>
+                                    <div id="selMuniDetails">—</div>
+                                </div>
+                                <button class="clear-btn" onclick="clearMuni()">שינוי</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>סוג העסקה:</label>
+                            <select id="transactionType" required>
+                                <option value="">בחרו סוג עסקה</option>
+                                <option value="sale">מכירה</option>
+                                <option value="gift">מתנה</option>
+                                <option value="inheritance">ירושה</option>
+                                <option value="divorce">גירושין</option>
+                                <option value="other">אחר</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>כתובת הנכס:</label>
+                            <input type="text" id="propertyAddress" placeholder="הזינו כתובת">
+                        </div>
+
+                        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 32px;">
+                            <button class="btn btn-primary" onclick="nextStep(2)">הבא</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: FILE UPLOAD -->
+                    <div class="form-step" id="step-2">
+                        <h3>העלאת קבצים</h3>
+
+                        <div class="upload-section">
+                            <label>חוזה מכר (חובה):</label>
+                            <p>העלו את חוזה המכר המלא החתום על ידי שני הצדדים.</p>
+                            <div class="upload-buttons">
+                                <button class="upload-btn" onclick="triggerUpload('contract')">בחרו קובץ</button>
+                            </div>
+                            <input type="file" id="file-contract" style="display:none" accept=".pdf,.doc,.docx,.jpg,.png" onchange="handleFile('contract', this)">
+                            <div class="uploaded-files" id="files-contract"></div>
+                        </div>
+
+                        <div class="upload-section">
+                            <label>צילום תעודת זהות (חובה):</label>
+                            <p>צילום דו-צדדי של תעודת הזהות של המוכר.</p>
+                            <div class="upload-buttons">
+                                <button class="upload-btn" onclick="triggerUpload('id')">בחרו קובץ</button>
+                            </div>
+                            <input type="file" id="file-id" style="display:none" accept=".pdf,.doc,.docx,.jpg,.png" onchange="handleFile('id', this)">
+                            <div class="uploaded-files" id="files-id"></div>
+                        </div>
+
+                        <div class="upload-section">
+                            <label>ערנונה (אופציונלי):</label>
+                            <p>אם יש לכם, העלו עותק של פרטי הערנונה.</p>
+                            <div class="upload-buttons">
+                                <button class="upload-btn" onclick="triggerUpload('arnona')">בחרו קובץ</button>
+                            </div>
+                            <input type="file" id="file-arnona" style="display:none" accept=".pdf,.doc,.docx,.jpg,.png" onchange="handleFile('arnona', this)">
+                            <div class="uploaded-files" id="files-arnona"></div>
+                        </div>
+
+                        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 32px;">
+                            <button class="btn btn-secondary" onclick="nextStep(1)">חזרה</button>
+                            <button class="btn btn-primary" onclick="nextStep(3)">הבא</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: PERSONAL DETAILS -->
+                    <div class="form-step" id="step-3">
+                        <h3>פרטים אישיים</h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>שם המוכר:</label>
+                                <input type="text" id="sellerName" placeholder="שם מלא">
+                            </div>
+                            <div class="form-group">
+                                <label>מספר ת.ז. של המוכר:</label>
+                                <input type="text" id="sellerId" placeholder="מספר ת.ז.">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>שם הקונה:</label>
+                                <input type="text" id="buyerName" placeholder="שם מלא">
+                            </div>
+                            <div class="form-group">
+                                <label>מספר ת.ז. של הקונה:</label>
+                                <input type="text" id="buyerId" placeholder="מספר ת.ז.">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>טלפון ליצירת קשר:</label>
+                                <input type="tel" id="phone" placeholder="05X-XXXXXXX">
+                            </div>
+                            <div class="form-group">
+                                <label>דוא"ל:</label>
+                                <input type="email" id="email" placeholder="your@email.com">
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 32px;">
+                            <button class="btn btn-secondary" onclick="nextStep(2)">חזרה</button>
+                            <button class="btn btn-primary" onclick="nextStep(4)">הבא</button>
+                        </div>
+                    </div>
+
+
+                    <!-- STEP 4: TERMS & DIGITAL SIGNATURE -->
+                    <div class="form-step" id="step-4">
+                        <h3>תנאי שימוש וחתימה על ייפוי כוח</h3>
+
+                        <div class="signature-section">
+                            <h4>תנאי שימוש</h4>
+                            <div class="terms-container" id="termsTextContainer">
+                                <div class="terms-text">
+<strong>תנאי שימוש - אישורטאבו</strong>
+
+<strong>1. הגדרות</strong>
+"השירות" — שירות להשגת אישור עירייה לטאבו מרשויות מקומיות בישראל.
+"הפלטפורמה" — אתר אישורטאבו.
+"הלקוח" — המשתמש בפלטפורמה ובשירותים.
+"המשרד" — משרד עורכי דין DML, עו"ד דרור מגן.
+
+<strong>2. תיאור השירות</strong>
+השירות מיועד להשגת אישור עירייה לצורך רישום בטאבו. המשרד פועל בשם הלקוח מול הרשות המקומית הרלוונטית, כולל הגשת בקשות, מעקב וקבלת האישור.
+
+<strong>3. הסמכה וייפוי כוח</strong>
+בחתימה על ייפוי הכוח בפלטפורמה, הלקוח מסמיך את המשרד לפעול בשמו להשגת אישור העירייה. ייפוי הכוח בתוקף עד להשלמת התהליך או ביטול בכתב.
+
+<strong>4. מסמכים נדרשים</strong>
+הלקוח נדרש לספק: חוזה מכר חתום, צילום תעודת זהות, פרטי הנכס (גוש, חלקה, כתובת), ולפי הצורך — אישור תשלום ארנונה.
+
+<strong>5. תשלום</strong>
+עמלת השירות מוצגת לפני השלמת ההזמנה. ביטול תוך 24 שעות — זיכוי מלא. ביטול תוך 7 ימים — זיכוי 50%. לאחר מכן — לא יינתן זיכוי.
+
+<strong>6. פרטיות ואבטחת מידע</strong>
+כל המסמכים נשמרים בהצפנה וישמשו אך ורק לצורך השגת אישור העירייה. המשרד לא יעביר מידע לצדדים שלישיים, למעט לרשויות הנדרשות לתהליך או על פי צו בית משפט.
+
+<strong>7. הגבלת אחריות</strong>
+המשרד פועל במקצועיות אך אינו אחראי לעיכובים של הרשות המקומית, דחיית בקשה עקב בעיות במסמכים, או שינויים בנוהלי הרשות. אחריות המשרד מוגבלת לגובה העמלה ששולמה.
+
+<strong>8. חתימה דיגיטלית</strong>
+החתימה הדיגיטלית בפלטפורמה זו שקולה לחתימה פיזית ובעלת תוקף משפטי מחייב. הפלטפורמה שומרת רישום של כל חתימה לצרכי תיעוד.
+
+<strong>9. דין חל וסמכות שיפוט</strong>
+תנאים אלו כפופים לחוקי מדינת ישראל. לבתי המשפט המוסמכים בישראל סמכות שיפוט בלעדית.
+
+עו"ד דרור מגן | משרד עורכי דין DML
+                                </div>
+                            </div>
+
+                            <label class="terms-checkbox">
+                                <input type="checkbox" id="termsAccept">
+                                <span>קראתי ואני מסכים/ה לתנאי השימוש</span>
+                            </label>
+                        </div>
+
+                        <div class="signature-section">
+                            <h4>ייפוי כוח</h4>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+                                להלן נוסח ייפוי הכוח שייחתם על ידך. אנא קרא/י בעיון ואשר/י בחתימתך הדיגיטלית.
+                            </p>
+                            <div class="poa-preview" id="poaPreview">
+                                <!-- Will be populated dynamically -->
+                            </div>
+
+                            <div class="signature-pad-container">
+                                <span class="signature-pad-label">חתימה דיגיטלית:</span>
+                                <canvas id="signatureCanvas" class="signature-canvas"></canvas>
+                            </div>
+
+                            <div class="signature-actions">
+                                <button type="button" class="sig-clear-btn" id="sigClearBtn" disabled>נקה חתימה</button>
+                                <button type="button" class="sig-undo-btn" id="sigUndoBtn" disabled>בטל שלב אחרון</button>
+                            </div>
+
+                            <div class="signature-status unsigned" id="sigStatus">לא חתום</div>
+                        </div>
+
+                        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 32px;">
+                            <button class="btn btn-secondary" onclick="nextStep(3)">חזרה</button>
+                            <button class="btn btn-primary" onclick="nextStep(5)">הבא - לתשלום</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 5: PAYMENT & REVIEW -->
+                    <div class="form-step" id="step-5">
+                        <h3>תשלום ואישור</h3>
+
+                        <div class="summary-box">
+                            <div class="summary-row">
+                                <span class="summary-label">רשות מקומית:</span>
+                                <span class="summary-value" id="summaryMuni">—</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-label">סוג עסקה:</span>
+                                <span class="summary-value" id="summaryType">—</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-label">כתובת נכס:</span>
+                                <span class="summary-value" id="summaryAddress">—</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-label">קבצים מועלים:</span>
+                                <span class="summary-value" id="summaryDocs">0</span>
+                            </div>
+
+                            <div class="fee-row">
+                                <div class="summary-row">
+                                    <span class="summary-label">עלות השירות:</span>
+                                    <span class="summary-value" id="serviceFee">₪0</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span class="summary-label">עלות הרשות:</span>
+                                    <span class="summary-value" id="muniFee">₪0</span>
+                                </div>
+                                <div class="summary-row total-row">
+                                    <span class="summary-label">סה"כ לתשלום:</span>
+                                    <span class="summary-value" id="totalFee">₪0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="payment-info">
+                            <h4>תשלום מאובטח</h4>
+                            <div class="payment-details">
+                                <p>התשלום מתבצע באמצעות דף תשלום מאובטח של טרנזילה.</p>
+                                <p>פרטי כרטיס האשראי שלכם אינם נשמרים באתר שלנו.</p>
+                            </div>
+                        </div>
+
+                        <!-- Payment iframe container - Tranzila hosted page -->
+                        <div id="paymentContainer">
+                            <div id="paymentLoading" style="display:none; text-align:center; padding: 40px;">
+                                <div class="spinner" style="margin: 0 auto 16px;"></div>
+                                <p>טוען דף תשלום מאובטח...</p>
+                            </div>
+                            <iframe id="paymentIframe" style="display:none;" sandbox="allow-forms allow-scripts allow-same-origin allow-top-navigation"></iframe>
+                            <div id="paymentError" style="display:none; text-align:center; padding: 24px; color: #dc2626;">
+                                <p>שגיאה בטעינת דף התשלום. אנא נסו שוב.</p>
+                                <button class="btn btn-secondary" onclick="initPayment()" style="margin-top: 12px;">נסה שוב</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="background: rgba(5,150,105,0.1); padding: 12px 16px; border-radius: var(--radius); border: 1px solid var(--accent);">
+                            <span style="color: var(--accent); font-weight: 500;">✓ תנאי השימוש אושרו וייפוי הכוח נחתם דיגיטלית</span>
+                        </div>
+
+                        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 32px;">
+                            <button class="btn btn-secondary" onclick="nextStep(3)">חזרה</button>
+                            <button class="btn btn-primary" onclick="submitOrder()" id="submitBtn">הגש הזמנה ועבור לתשלום</button>
+                        </div>
+                    </div>
+
+                    <!-- SUCCESS -->
+                    <div class="form-step" id="step-success">
+                        <div class="success-box">
+                            <div class="success-icon">✅</div>
+                            <h3>ההזמנה התקבלה!</h3>
+                            <p>תודה שבחרתם בנו. ההזמנה שלכם קיבלה מספר סידורי:</p>
+                            <div class="order-number" id="orderNum">—</div>
+                            <p>בקרוב נשלח לכם דוא"ל עם עדכוני ההתקדמות.</p>
+                            <p>ניתן לעקוב אחר ההזמנה בעמוד <a href="#" onclick="showPage('status')" style="color: var(--primary); text-decoration: underline;">מעקב הזמנה</a>.</p>
+                            <div class="success-buttons">
+                                <a href="#" onclick="showPage('home')" class="btn btn-primary">לדף הבית</a>
+                                <a href="#" onclick="showPage('status')" class="btn btn-secondary">לעמוד המעקב</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== STATUS PAGE ========== -->
+    <div class="page-section" id="page-status">
+        <div class="container">
+            <h2>מעקב הזמנה</h2>
+
+            <div class="track-form">
+                <div class="form-group">
+                    <label>הזינו את מספר ההזמנה או טלפון ליצירת קשר:</label>
+                    <input type="text" id="trackInput" placeholder="ISH-20260407-001 או 05X-XXXXXXX">
+                </div>
+                <button class="btn btn-primary" onclick="trackOrder()" style="width: 100%; margin-top: 16px;">חיפוש</button>
+            </div>
+
+            <div id="statusTimeline">
+                <div class="timeline">
+                    <div class="timeline-item completed">
+                        <div class="timeline-dot">1</div>
+                        <div class="timeline-content">
+                            <h4>הזמנה התקבלה</h4>
+                            <p>התקבלה בהצלחה</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item completed">
+                        <div class="timeline-dot">2</div>
+                        <div class="timeline-content">
+                            <h4>תשלום אושר</h4>
+                            <p>בהצלחה</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item active">
+                        <div class="timeline-dot">3</div>
+                        <div class="timeline-content">
+                            <h4>בטיפול צוות</h4>
+                            <p>עכשיו</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot">4</div>
+                        <div class="timeline-content">
+                            <h4>הגשה לעירייה</h4>
+                            <p>טרם בוצע</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot">5</div>
+                        <div class="timeline-content">
+                            <h4>אישור עירייה התקבל</h4>
+                            <p>טרם בוצע</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== ADMIN PAGE ========== -->
+    <div class="page-section" id="page-admin">
+        <div class="admin-panel">
+            <div class="admin-header">
+                <h2>פאנל ניהול</h2>
+                <span style="font-size:14px; color:var(--text-secondary);">שלום, דרור</span>
+            </div>
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="statTotal">0</div>
+                    <div class="stat-label">סה"כ הזמנות</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statPending" style="color:var(--warning);">0</div>
+                    <div class="stat-label">ממתינות לטיפול</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statSubmitted" style="color:var(--primary);">0</div>
+                    <div class="stat-label">הוגשו לעירייה</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statCompleted" style="color:var(--accent);">0</div>
+                    <div class="stat-label">הושלמו</div>
+                </div>
+            </div>
+            <div class="orders-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>מס' הזמנה</th>
+                            <th>לקוח</th>
+                            <th>רשות</th>
+                            <th>תאריך</th>
+                            <th>סטטוס</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <tr>
+                            <td colspan="5" style="text-align:center; padding:40px; color:var(--text-secondary);">
+                                אין הזמנות עדיין
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <h3>📋 אישורטאבו</h3>
+            <p>
+                שירות אוטומטי להוצאת אישור עירייה לטאבו.
+                <br>מבית DML עורכי דין.
+                <br>כל הזכויות שמורות © 2026
+            </p>
+        </div>
+        <div class="footer-links">
+            <h4>קישורים</h4>
+            <a href="#" onclick="showPage('home')">ראשי</a>
+            <a href="#" onclick="showPage('order')">הזמנה חדשה</a>
+            <a href="#" onclick="showPage('status')">מעקב הזמנה</a>
+        </div>
+        <div class="footer-links">
+            <h4>צרו קשר</h4>
+            <a href="mailto:drorm4@gmail.com">drorm4@gmail.com</a>
+            <a href="tel:+972000000000">טלפון: 0XX-XXXXXXX</a>
+            <a href="#">תנאי שימוש</a>
+            <a href="#">מדיניות פרטיות</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        אישורטאבו — מבית DML עורכי דין | כל הזכויות שמורות © 2026
+    </div>
+</footer>
+
+<!-- NOTIFICATION -->
+<div class="notification" id="notification"></div>
+
+<script>
+// ==========================================
+// API CONFIGURATION
+// ==========================================
+const API_BASE = ''; // same origin
+let apiCache = {
+    municipalities: null,
+    cachedAt: null
+};
+
+// ==========================================
+// API HELPER FUNCTIONS
+// ==========================================
+async function apiCall(endpoint, options = {}) {
+    const { method = 'GET', body = null, showLoading = true } = options;
+    
+    try {
+        if (showLoading) {
+            showLoadingState(true);
+        }
+
+        const config = {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        };
+
+        if (body) {
+            config.body = JSON.stringify(body);
+        }
+
+        const response = await fetch(`${API_BASE}${endpoint}`, config);
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `API Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('API Error:', error);
+        notify(`שגיאה: ${error.message}`);
+        throw error;
+    } finally {
+        if (showLoading) {
+            showLoadingState(false);
+        }
+    }
+}
+
+function showLoadingState(loading) {
+    const btn = document.getElementById('submitBtn');
+    if (btn) {
+        btn.classList.toggle('btn-loading', loading);
+        btn.disabled = loading;
+    }
+}
+
+// ==========================================
+// APP STATE
+// ==========================================
+let currentStep = 1;
+let selectedMunicipality = null;
+let uploadedFiles = { contract: [], id: [], arnona: [] };
+let uploadedFilePaths = { contract: [], id: [], arnona: [] };
+let orders = [];
+
+// Debounce function for municipality search
+let municipalitySearchTimeout;
+const DEBOUNCE_DELAY = 300;
+
+// ==========================================
+// PAGE NAVIGATION
+// ==========================================
+function showPage(page) {
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelectorAll('#mainNav a').forEach(a => a.classList.remove('active'));
+    event.preventDefault?.();
+
+    // Reset form if going to order
+    if (page === 'order') {
+        currentStep = 1;
+        updateFormSteps();
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ==========================================
+// FORM STEPS
+// ==========================================
+function nextStep(step) {
+    // Validation
+    if (step === 2 && currentStep === 1) {
+        if (!selectedMunicipality) {
+            notify('יש לבחור רשות מקומית');
+            return;
+        }
+        if (!document.getElementById('transactionType').value) {
+            notify('יש לבחור סוג עסקה');
+            return;
+        }
+    }
+
+    if (step === 3 && currentStep === 2) {
+        if (uploadedFiles.contract.length === 0) {
+            notify('יש להעלות חוזה מכר');
+            return;
+        }
+        if (uploadedFiles.id.length === 0) {
+            notify('יש להעלות צילום תעודת זהות');
+            return;
+        }
+    }
+
+    if (step === 4 && currentStep === 3) {
+        const required = ['sellerName', 'sellerId', 'buyerName', 'buyerId', 'phone', 'email'];
+        for (const id of required) {
+            if (!document.getElementById(id).value.trim()) {
+                notify('יש למלא את כל שדות החובה');
+                return;
+            }
+        }
+    }
+
+    // Validate step 4 -> 5: terms accepted + signature
+    if (step === 5 && currentStep === 4) {
+        if (!document.getElementById('termsAccept').checked) {
+            notify('יש לאשר את תנאי השימוש');
+            return;
+        }
+        if (!signaturePadInstance || signaturePadInstance.isEmpty === true) {
+            notify('יש לחתום חתימה דיגיטלית על ייפוי הכוח');
+            return;
+        }
+    }
+
+    currentStep = step;
+    updateFormSteps();
+
+    // Populate POA preview when reaching step 4
+    if (step === 4) {
+        populatePOAPreview();
+        initSignaturePadIfNeeded();
+    }
+
+    // Populate summary in step 5
+    if (step === 5) {
+        populateSummary();
+    }
+}
+
+function updateFormSteps() {
+    document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-' + currentStep)?.classList.add('active');
+
+    document.querySelectorAll('.form-progress-step').forEach(s => {
+        const stepNum = parseInt(s.dataset.step);
+        s.classList.remove('active', 'completed');
+        if (stepNum === currentStep) s.classList.add('active');
+        else if (stepNum < currentStep) s.classList.add('completed');
+    });
+}
+
+function populateSummary() {
+    document.getElementById('summaryMuni').textContent = selectedMunicipality?.name || '—';
+
+    const typeMap = { sale: 'מכירה', gift: 'מתנה', inheritance: 'ירושה', divorce: 'גירושין', other: 'אחר' };
+    document.getElementById('summaryType').textContent = typeMap[document.getElementById('transactionType').value] || '—';
+    document.getElementById('summaryAddress').textContent = document.getElementById('propertyAddress').value || '—';
+
+    const totalDocs = uploadedFiles.contract.length + uploadedFiles.id.length + uploadedFiles.arnona.length;
+    document.getElementById('summaryDocs').textContent = totalDocs + ' קבצים';
+
+    // Calculate fees
+    const serviceFee = 350;
+    const muniFee = selectedMunicipality?.fee || 0;
+    document.getElementById('serviceFee').textContent = '₪' + serviceFee;
+    document.getElementById('muniFee').textContent = '₪' + muniFee;
+    document.getElementById('totalFee').textContent = '₪' + (serviceFee + muniFee);
+}
+
+// ==========================================
+// MUNICIPALITY SEARCH (WITH REAL API)
+// ==========================================
+async function filterMunicipalities() {
+    const query = document.getElementById('muniSearch').value.trim();
+    const dropdown = document.getElementById('muniDropdown');
+
+    if (!query) {
+        dropdown.classList.remove('show');
+        return;
+    }
+
+    // Clear previous timeout
+    clearTimeout(municipalitySearchTimeout);
+
+    // Debounce API call
+    municipalitySearchTimeout = setTimeout(async () => {
+        try {
+            const results = await apiCall(`/api/municipalities?search=${encodeURIComponent(query)}`, { showLoading: false });
+            
+            if (!results || results.length === 0) {
+                dropdown.innerHTML = '<div style="padding:12px 16px; color:var(--text-secondary); font-size:14px;">לא נמצאו תוצאות</div>';
+            } else {
+                dropdown.innerHTML = results.slice(0, 10).map(m => `
+                    <div class="muni-option" onclick="selectMuni('${m.name}', ${JSON.stringify(m).replace(/'/g, '&#39;')})">
+                        <span>${m.name}</span>
+                        <span class="muni-type">${m.method || 'טיפול רגיל'}</span>
+                    </div>
+                `).join('');
+            }
+            dropdown.classList.add('show');
+        } catch (error) {
+            console.error('Error fetching municipalities:', error);
+            // Fallback to local search if API fails
+            fallbackMunicipalitySearch(query, dropdown);
+        }
+    }, DEBOUNCE_DELAY);
+}
+
+function fallbackMunicipalitySearch(query, dropdown) {
+    // This would be a local array as fallback - for now just show error
+    dropdown.innerHTML = '<div style="padding:12px 16px; color:var(--text-secondary); font-size:14px;">שגיאה בחיפוש. נסו שוב.</div>';
+    dropdown.classList.add('show');
+}
+
+function showMuniDropdown() {
+    if (document.getElementById('muniSearch').value) {
+        filterMunicipalities();
+    }
+}
+
+function selectMuni(name, muniObj) {
+    selectedMunicipality = muniObj || { name };
+    document.getElementById('muniSearch').style.display = 'none';
+    document.getElementById('muniDropdown').classList.remove('show');
+
+    document.getElementById('selMuniName').textContent = selectedMunicipality.name;
+    document.getElementById('selMuniDetails').textContent = `הגשה דרך: ${selectedMunicipality.method || 'טיפול רגיל'}`;
+    document.getElementById('selectedMuni').style.display = 'flex';
+}
+
+function clearMuni() {
+    selectedMunicipality = null;
+    document.getElementById('muniSearch').style.display = 'block';
+    document.getElementById('muniSearch').value = '';
+    document.getElementById('selectedMuni').style.display = 'none';
+}
+
+// Close dropdown on outside click
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.muni-search-wrapper')) {
+        document.getElementById('muniDropdown').classList.remove('show');
+    }
+});
+
+// ==========================================
+// FILE UPLOAD (WITH REAL API)
+// ==========================================
+function triggerUpload(type) {
+    document.getElementById('file-' + type).click();
+}
+
+async function handleFile(type, input) {
+    const container = document.getElementById('files-' + type);
+
+    for (const file of input.files) {
+        if (file.size > 10 * 1024 * 1024) {
+            notify('הקובץ גדול מ-10MB');
+            continue;
+        }
+
+        // Create FormData for multipart upload
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', type);
+
+        try {
+            // Upload file via API
+            const response = await fetch(`${API_BASE}/api/upload`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('Upload failed');
+            }
+
+            const result = await response.json();
+            
+            // Store file info locally
+            uploadedFiles[type].push(file);
+            uploadedFilePaths[type].push(result.filePath || result.url);
+
+            // Display uploaded file with progress
+            const el = document.createElement('div');
+            el.className = 'uploaded-file';
+            el.innerHTML = `
+                <span>📎</span>
+                <span class="file-name">${file.name}</span>
+                <span class="file-size">(${(file.size/1024).toFixed(0)}KB)</span>
+                <button class="remove-file" onclick="removeFile('${type}', '${file.name}', this)">✕</button>
+            `;
+            container.appendChild(el);
+
+            notify('הקובץ הועלה בהצלחה', 'success');
+        } catch (error) {
+            console.error('File upload error:', error);
+            notify(`שגיאה בהעלאת הקובץ: ${error.message}`);
+        }
+    }
+
+    input.value = '';
+}
+
+function removeFile(type, name, el) {
+    const idx = uploadedFiles[type].findIndex(f => f.name === name);
+    if (idx > -1) {
+        uploadedFiles[type].splice(idx, 1);
+        uploadedFilePaths[type].splice(idx, 1);
+    }
+    el.parentElement.remove();
+}
+
+// ==========================================
+// PAYMENT & ORDER SUBMISSION (WITH TRANZILA IFRAME)
+// ==================================================
+let currentOrderId = null;
+let paymentCheckInterval = null;
+
+async function submitOrder() {
+    // Terms and signature already validated in step 4
+
+    try {
+        showLoadingState(true);
+
+        // Step 1: Create order (without payment yet)
+        const orderData = {
+            municipality: selectedMunicipality?.name || '',
+            transactionType: document.getElementById('transactionType').value,
+            sellerName: document.getElementById('sellerName').value,
+            sellerId: document.getElementById('sellerId').value,
+            buyerName: document.getElementById('buyerName').value,
+            buyerId: document.getElementById('buyerId').value,
+            phone: document.getElementById('phone').value,
+            email: document.getElementById('email').value,
+            propertyAddress: document.getElementById('propertyAddress').value,
+            block: document.getElementById('block')?.value || '',
+            parcel: document.getElementById('parcel')?.value || '',
+            files: {
+                contract: uploadedFilePaths?.contract || [],
+                id: uploadedFilePaths?.id || [],
+                arnona: uploadedFilePaths?.arnona || []
+            },
+            signatureData: getSignatureData(),
+            termsAccepted: true,
+            signedAt: new Date().toISOString()
+        };
+
+        const orderResult = await apiCall('/api/orders', {
+            method: 'POST',
+            body: orderData,
+            showLoading: false
+        });
+
+        if (!orderResult.success || !orderResult.data?.id) {
+            throw new Error(orderResult.error || 'Order creation failed');
+        }
+
+        currentOrderId = orderResult.data.id;
+
+        // Step 2: Get payment page URL
+        await initPayment();
+
+    } catch (error) {
+        console.error('Order submission error:', error);
+        notify(`שגיאה בהגשת ההזמנה: ${error.message}`);
+    } finally {
+        showLoadingState(false);
+    }
+}
+
+async function initPayment() {
+    if (!currentOrderId) {
+        notify('שגיאה: לא נמצאה הזמנה');
+        return;
+    }
+
+    const paymentLoading = document.getElementById('paymentLoading');
+    const paymentIframe = document.getElementById('paymentIframe');
+    const paymentError = document.getElementById('paymentError');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // Show loading, hide iframe and error
+    paymentLoading.style.display = 'block';
+    paymentIframe.style.display = 'none';
+    paymentError.style.display = 'none';
+    submitBtn.style.display = 'none';
+
+    try {
+        const result = await apiCall('/api/payment/create-page', {
+            method: 'POST',
+            body: {
+                orderId: currentOrderId,
+                amount: calculateTotalFee(),
+                customerEmail: document.getElementById('email').value,
+                customerName: document.getElementById('sellerName').value,
+                customerPhone: document.getElementById('phone').value
+            },
+            showLoading: false
+        });
+
+        if (!result.success || !result.data?.url) {
+            throw new Error(result.error || 'Failed to create payment page');
+        }
+
+        // Show iframe with payment page
+        paymentIframe.src = result.data.url;
+        paymentLoading.style.display = 'none';
+        paymentIframe.style.display = 'block';
+
+        // Start polling for payment confirmation
+        startPaymentCheck();
+
+    } catch (error) {
+        console.error('Payment init error:', error);
+        paymentLoading.style.display = 'none';
+        paymentError.style.display = 'block';
+        submitBtn.style.display = 'block';
+    }
+}
+
+function startPaymentCheck() {
+    // Poll server every 3 seconds to check if payment was confirmed via webhook
+    if (paymentCheckInterval) clearInterval(paymentCheckInterval);
+
+    paymentCheckInterval = setInterval(async () => {
+        try {
+            const result = await apiCall(`/api/orders/${currentOrderId}`, {
+                showLoading: false
+            });
+
+            if (result.success && result.data?.paymentStatus === 'paid') {
+                clearInterval(paymentCheckInterval);
+                paymentCheckInterval = null;
+                onPaymentSuccess(result.data);
+            }
+        } catch (e) {
+            // Silent fail on polling
+        }
+    }, 3000);
+
+    // Stop polling after 10 minutes
+    setTimeout(() => {
+        if (paymentCheckInterval) {
+            clearInterval(paymentCheckInterval);
+            paymentCheckInterval = null;
+        }
+    }, 10 * 60 * 1000);
+}
+
+function onPaymentSuccess(orderData) {
+    // Hide iframe
+    document.getElementById('paymentIframe').style.display = 'none';
+    document.getElementById('paymentContainer').style.display = 'none';
+
+    // Update local state
+    orders.push({
+        id: orderData.id,
+        date: new Date().toLocaleDateString('he-IL'),
+        status: orderData.status
+    });
+    if (typeof updateAdmin === 'function') updateAdmin();
+
+    // Show success
+    document.getElementById('orderNum').textContent = orderData.id;
+    document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-success').classList.add('active');
+    document.querySelectorAll('.form-progress-step').forEach(s => s.classList.add('completed'));
+
+    // Clear form
+    clearOrderForm();
+    currentOrderId = null;
+}
+
+// Listen for Tranzila redirect message (in case of postMessage support)
+window.addEventListener('message', function(event) {
+    // Tranzila may send a postMessage on success
+    if (event.data && (event.data.status === 'success' || event.data.Response === '000')) {
+        if (currentOrderId) {
+            // Trigger immediate check instead of waiting for next poll
+            clearInterval(paymentCheckInterval);
+            setTimeout(() => {
+                apiCall(`/api/orders/${currentOrderId}`, { showLoading: false })
+                    .then(result => {
+                        if (result.success && result.data?.paymentStatus === 'paid') {
+                            onPaymentSuccess(result.data);
+                        } else {
+                            // Payment may not be confirmed yet via webhook, restart polling
+                            startPaymentCheck();
+                        }
+                    });
+            }, 1000);
+        }
+    }
+});
+
+function calculateTotalFee() {
+    const serviceFee = 350;
+    const muniFee = selectedMunicipality?.fee || 0;
+    return serviceFee + muniFee;
+}
+
+function clearOrderForm() {
+    document.getElementById('muniSearch').value = '';
+    document.getElementById('transactionType').value = '';
+    document.getElementById('propertyAddress').value = '';
+    document.getElementById('sellerName').value = '';
+    document.getElementById('sellerId').value = '';
+    document.getElementById('buyerName').value = '';
+    document.getElementById('buyerId').value = '';
+    document.getElementById('phone').value = '';
+    document.getElementById('email').value = '';
+    if (signaturePadInstance) signaturePadInstance.clear();
+    const termsAccept = document.getElementById('termsAccept');
+    if (termsAccept) termsAccept.checked = false;
+    // Reset payment container
+    document.getElementById('paymentIframe').src = '';
+    document.getElementById('paymentIframe').style.display = 'none';
+    document.getElementById('paymentLoading').style.display = 'none';
+    document.getElementById('paymentError').style.display = 'none';
+    document.getElementById('paymentContainer').style.display = 'block';
+    document.getElementById('submitBtn').style.display = 'block';
+    currentOrderId = null;
+    if (paymentCheckInterval) { clearInterval(paymentCheckInterval); paymentCheckInterval = null; }
+    uploadedFiles = { contract: [], id: [], arnona: [] };
+    uploadedFilePaths = { contract: [], id: [], arnona: [] };
+    document.getElementById('files-contract').innerHTML = '';
+    document.getElementById('files-id').innerHTML = '';
+    document.getElementById('files-arnona').innerHTML = '';
+}
+
+// ==========================================
+// ORDER TRACKING (WITH REAL API)
+// ==========================================
+async function trackOrder() {
+    const input = document.getElementById('trackInput').value.trim();
+    if (!input) {
+        notify('יש להזין מספר הזמנה או טלפון');
+        return;
+    }
+
+    try {
+        let orderData;
+
+        // Try to fetch by order ID or phone
+        if (input.startsWith('ISH-')) {
+            orderData = await apiCall(`/api/orders/${input}`, { showLoading: false });
+        } else {
+            // Assume it's a phone number
+            const result = await apiCall(`/api/orders?phone=${encodeURIComponent(input)}`, { showLoading: false });
+            orderData = result[0]; // Get first result
+        }
+
+        if (!orderData) {
+            notify('לא נמצאה הזמנה');
+            return;
+        }
+
+        // Update timeline based on order status
+        updateTimeline(orderData.status, orderData.statusHistory || []);
+        document.getElementById('statusTimeline').classList.add('show');
+
+    } catch (error) {
+        console.error('Order tracking error:', error);
+    }
+}
+
+function updateTimeline(status, statusHistory) {
+    const statusMap = {
+        new: 0,
+        payment_confirmed: 1,
+        processing: 2,
+        submitted: 3,
+        completed: 4
+    };
+
+    const currentStep = statusMap[status] || 0;
+
+    document.querySelectorAll('.timeline-item').forEach((item, idx) => {
+        item.classList.remove('completed', 'active');
+        if (idx < currentStep) {
+            item.classList.add('completed');
+        } else if (idx === currentStep) {
+            item.classList.add('active');
+        }
+    });
+}
+
+// ==========================================
+// ADMIN PANEL (WITH REAL API)
+// ==========================================
+async function loadAdminData() {
+    try {
+        // Load stats
+        const stats = await apiCall('/api/admin/stats', { showLoading: false });
+        document.getElementById('statTotal').textContent = stats.total || 0;
+        document.getElementById('statPending').textContent = stats.pending || 0;
+        document.getElementById('statSubmitted').textContent = stats.submitted || 0;
+        document.getElementById('statCompleted').textContent = stats.completed || 0;
+
+        // Load orders
+        const ordersData = await apiCall('/api/admin/orders?limit=50&offset=0', { showLoading: false });
+        orders = ordersData.orders || [];
+        updateAdmin();
+
+    } catch (error) {
+        console.error('Error loading admin data:', error);
+    }
+}
+
+function updateAdmin() {
+    document.getElementById('statTotal').textContent = orders.length;
+    document.getElementById('statPending').textContent = orders.filter(o => o.status === 'new').length;
+    document.getElementById('statSubmitted').textContent = orders.filter(o => o.status === 'submitted').length;
+    document.getElementById('statCompleted').textContent = orders.filter(o => o.status === 'completed').length;
+
+    const tbody = document.getElementById('ordersTableBody');
+    if (orders.length === 0) return;
+
+    const statusMap = {
+        new: { label: 'חדשה', class: 'new' },
+        processing: { label: 'בטיפול', class: 'processing' },
+        submitted: { label: 'הוגשה', class: 'submitted' },
+        completed: { label: 'הושלמה', class: 'completed' }
+    };
+
+    tbody.innerHTML = orders.map(o => `
+        <tr>
+            <td><strong>${o.id}</strong></td>
+            <td>${o.sellerName}</td>
+            <td>${o.municipality}</td>
+            <td>${o.date}</td>
+            <td><span class="status-badge ${statusMap[o.status]?.class || 'new'}">${statusMap[o.status]?.label || o.status}</span></td>
+        </tr>
+    `).join('');
+}
+
+async function processOrder(orderId) {
+    try {
+        const result = await apiCall(`/api/admin/process/${orderId}`, {
+            method: 'POST',
+            body: { status: 'processing' }
+        });
+
+        notify('ההזמנה עודכנה בהצלחה', 'success');
+        loadAdminData();
+    } catch (error) {
+        console.error('Error processing order:', error);
+    }
+}
+
+// ==========================================
+// NOTIFICATIONS
+// ==========================================
+function notify(msg, type = 'error') {
+    const el = document.getElementById('notification');
+    el.textContent = msg;
+    el.classList.remove('success');
+    if (type === 'success') {
+        el.classList.add('success');
+    }
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ==========================================
+// MOBILE MENU
+// ==========================================
+function toggleMenu() {
+    const nav = document.getElementById('mainNav');
+    nav.classList.toggle('mobile-show');
+}
+
+// ==========================================
+// SIGNATURE PAD
+// ==========================================
+class SignaturePad {
+    constructor(canvasElement) {
+        this.canvas = canvasElement;
+        this.ctx = this.canvas.getContext('2d');
+        this.isDrawing = false;
+        this.isEmpty = true;
+        this.currentStroke = [];
+        this.historyStack = [];
+        this.penColor = '#1e293b';
+        this.penWidth = 2;
+        this.setupCanvas();
+        this.attachEventListeners();
+    }
+
+    setupCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = this.canvas.getBoundingClientRect();
+        this.canvas.width = rect.width * dpr;
+        this.canvas.height = rect.height * dpr;
+        this.ctx.scale(dpr, dpr);
+        this.ctx.lineCap = 'round';
+        this.ctx.lineJoin = 'round';
+        this.ctx.lineWidth = this.penWidth;
+        this.ctx.strokeStyle = this.penColor;
+        this.canvasWidth = rect.width;
+        this.canvasHeight = rect.height;
+    }
+
+    attachEventListeners() {
+        this.canvas.addEventListener('mousedown', (e) => this.pointerDown(e));
+        this.canvas.addEventListener('mousemove', (e) => this.pointerMove(e));
+        this.canvas.addEventListener('mouseup', () => this.pointerUp());
+        this.canvas.addEventListener('mouseout', () => this.pointerUp());
+        this.canvas.addEventListener('touchstart', (e) => { e.preventDefault(); this.pointerDown(e.touches[0]); }, { passive: false });
+        this.canvas.addEventListener('touchmove', (e) => { e.preventDefault(); this.pointerMove(e.touches[0]); }, { passive: false });
+        this.canvas.addEventListener('touchend', (e) => { e.preventDefault(); this.pointerUp(); }, { passive: false });
+    }
+
+    getPos(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    }
+
+    pointerDown(e) {
+        this.isDrawing = true;
+        this.currentStroke = [];
+        const pos = this.getPos(e);
+        this.currentStroke.push(pos);
+        this.ctx.beginPath();
+        this.ctx.moveTo(pos.x, pos.y);
+    }
+
+    pointerMove(e) {
+        if (!this.isDrawing) return;
+        const pos = this.getPos(e);
+        this.currentStroke.push(pos);
+        this.ctx.lineTo(pos.x, pos.y);
+        this.ctx.stroke();
+    }
+
+    pointerUp() {
+        if (!this.isDrawing) return;
+        this.isDrawing = false;
+        this.ctx.closePath();
+        if (this.currentStroke.length > 0) {
+            this.historyStack.push(this.currentStroke);
+            this.isEmpty = false;
+            this.canvas.classList.add('has-signature');
+        }
+        updateSignatureUI();
+    }
+
+    clear() {
+        this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+        this.isEmpty = true;
+        this.historyStack = [];
+        this.currentStroke = [];
+        this.canvas.classList.remove('has-signature');
+        updateSignatureUI();
+    }
+
+    undo() {
+        if (this.historyStack.length === 0) return;
+        this.historyStack.pop();
+        this.redraw();
+        if (this.historyStack.length === 0) {
+            this.isEmpty = true;
+            this.canvas.classList.remove('has-signature');
+        }
+        updateSignatureUI();
+    }
+
+    redraw() {
+        this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+        for (const stroke of this.historyStack) {
+            if (stroke.length === 0) continue;
+            this.ctx.beginPath();
+            this.ctx.moveTo(stroke[0].x, stroke[0].y);
+            for (let j = 1; j < stroke.length; j++) {
+                const prev = stroke[j - 1];
+                const curr = stroke[j];
+                const cx = (prev.x + curr.x) / 2;
+                const cy = (prev.y + curr.y) / 2;
+                this.ctx.quadraticCurveTo(prev.x, prev.y, cx, cy);
+            }
+            this.ctx.lineTo(stroke[stroke.length - 1].x, stroke[stroke.length - 1].y);
+            this.ctx.stroke();
+            this.ctx.closePath();
+        }
+    }
+
+    toDataURL() {
+        if (this.isEmpty) return null;
+        return this.canvas.toDataURL('image/png', 0.95);
+    }
+}
+
+let signaturePadInstance = null;
+
+function initSignaturePadIfNeeded() {
+    if (signaturePadInstance) return;
+    const canvas = document.getElementById('signatureCanvas');
+    if (!canvas) return;
+    signaturePadInstance = new SignaturePad(canvas);
+
+    document.getElementById('sigClearBtn').addEventListener('click', () => {
+        if (signaturePadInstance) signaturePadInstance.clear();
+    });
+    document.getElementById('sigUndoBtn').addEventListener('click', () => {
+        if (signaturePadInstance) signaturePadInstance.undo();
+    });
+    document.getElementById('termsAccept').addEventListener('change', updateSignatureUI);
+}
+
+function updateSignatureUI() {
+    const status = document.getElementById('sigStatus');
+    const clearBtn = document.getElementById('sigClearBtn');
+    const undoBtn = document.getElementById('sigUndoBtn');
+    const termsOk = document.getElementById('termsAccept') && document.getElementById('termsAccept').checked;
+    const sigOk = signaturePadInstance && !signaturePadInstance.isEmpty;
+
+    if (clearBtn) clearBtn.disabled = !sigOk;
+    if (undoBtn) undoBtn.disabled = !signaturePadInstance || signaturePadInstance.historyStack.length === 0;
+
+    if (status) {
+        status.classList.remove('signed', 'unsigned');
+        if (sigOk && termsOk) {
+            status.textContent = 'חתום — ייפוי הכוח אושר';
+            status.classList.add('signed');
+        } else {
+            status.textContent = 'לא חתום';
+            status.classList.add('unsigned');
+        }
+    }
+}
+
+function getSignatureData() {
+    if (!signaturePadInstance) return null;
+    return signaturePadInstance.toDataURL();
+}
+
+// ==========================================
+// POA PREVIEW
+// ==========================================
+function populatePOAPreview() {
+    const clientName = document.getElementById('sellerName').value || '—';
+    const clientId = document.getElementById('sellerId').value || '—';
+    const municipality = selectedMunicipality ? selectedMunicipality.name : '—';
+    const propertyAddress = document.getElementById('propertyAddress').value || '—';
+    const today = new Date().toLocaleDateString('he-IL');
+
+    const poaText = 'ייפוי כוח\n\n' +
+        'אני הח"מ, ' + clientName + ', בעל/ת ת.ז. מספר ' + clientId +
+        ', מצהיר/ה בזאת כי אני מייפה את כוחו של עו"ד דרור מגן, ממשרד עורכי דין DML, ' +
+        'לפעול בשמי ובמקומי בכל הקשור להשגת אישור עירייה לטאבו עבור הנכס המפורט להלן:\n\n' +
+        'עירייה/רשות מקומית: ' + municipality + '\n' +
+        'כתובת הנכס: ' + propertyAddress + '\n\n' +
+        'סמכויות הנציג:\n' +
+        '• להגיש בקשות וטפסים לרשות המקומית לשם קבלת אישור עירייה לטאבו\n' +
+        '• לחתום בשמי על כל מסמך הנדרש לשם השלמת התהליך\n' +
+        '• לנהל התכתבות עם הרשות המקומית והרשויות הרלוונטיות\n' +
+        '• לקבל בשמי כל אישור, מסמך והודעה מהרשויות\n' +
+        '• לבצע כל פעולה סבירה הנדרשת להשלמת התהליך\n\n' +
+        'מגבלות: ייפוי כוח זה מוגבל אך ורק להשגת אישור עירייה לטאבו עבור הנכס המפורט לעיל. ' +
+        'הנציג אינו מוסמך לחתום על חוזי מכר או כל הסכם אחר.\n\n' +
+        'תוקף: ייפוי כוח זה בתוקף מיום חתימתו ועד להשלמת התהליך או ביטולו בכתב.\n\n' +
+        'חתימה דיגיטלית: אני מאשר/ת כי חתימתי הדיגיטלית על מסמך זה שקולה לחתימה פיזית ובעלת תוקף משפטי מחייב.\n\n' +
+        'תאריך: ' + today;
+
+    const preview = document.getElementById('poaPreview');
+    if (preview) {
+        preview.textContent = poaText;
+    }
+}
+
+// ==========================================
+// INITIALIZATION
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Load admin data when page loads (if admin panel is accessed)
+    const adminSection = document.getElementById('page-admin');
+    if (adminSection) {
+        adminSection.addEventListener('click', () => {
+            loadAdminData();
+        }, { once: true });
+    }
+});
+</script>
+
+</body>
+</html>
